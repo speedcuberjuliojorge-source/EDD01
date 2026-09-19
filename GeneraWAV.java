@@ -2,6 +2,9 @@ package generaWav;
 
 public class GeneraWAV {
 
+    boolean esWAV = true;
+    String cadWAV = ".wav";
+
     /**
      * realizar la creación efectiva del archivo WAV y validar los valores
      */
@@ -16,13 +19,26 @@ public class GeneraWAV {
      */
     public void escribe(String nombre, int iTiempo,
             int iFrecuenciaMuestreo, int iArmonico) {
+
+        for (int i = 3; i >= 0 && esWAV; i--) {
+            if (!(nombre.charAt(nombre.length() - 1 - i) == cadWAV.charAt(3 - i))) {
+                esWAV = false;
+                throw new IllegalArgumentException("archivo no wav");
+            }
+        }
+
         if (nombre == null) {
             throw new java.lang.NullPointerException();
         }
-        if (iTiempo < 0 || iFrecuenciaMuestreo < 0 || iArmonico < 0) {
+
+        if (nombre.isEmpty()) {
             throw new java.lang.IllegalArgumentException();
         }
-        if (iArmonico > 20000 || iArmonico < 15430) {
+
+        if (iTiempo <= 0 || iFrecuenciaMuestreo <= 0 || iArmonico <= 0) {
+            throw new java.lang.IllegalArgumentException();
+        }
+        if (iArmonico > 20000) {
             throw new java.lang.IllegalArgumentException();
         }
         /*

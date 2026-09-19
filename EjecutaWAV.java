@@ -86,6 +86,7 @@ public class EjecutaWAV {
 
         //invocar a la clase generaWav.GeneraWAV para realizar la creación efectiva del archivo WAV.
         generaWav = new GeneraWAV();
+
         generaWav.escribe(nombreArchAud, duracion, frecuencia_muestreo, duracion);
         /*
         EXEPCIONES QUE PUEDE LANZAR EL PROGRAMA
