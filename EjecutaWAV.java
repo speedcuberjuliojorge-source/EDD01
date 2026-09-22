@@ -77,7 +77,7 @@ public class EjecutaWAV {
                     }
                     senial_armonica = Integer.parseInt(buffLectura);
                     // se verifica el rango de la señal armonica
-                    if (senial_armonica > 20000 || senial_armonica < 15430) {
+                    if (senial_armonica > 20000 || senial_armonica < 0) {
                         throw new java.lang.IllegalArgumentException();
                     }
                 } catch (java.lang.IllegalArgumentException e) {
@@ -108,8 +108,8 @@ public class EjecutaWAV {
         }
 
         //invocar a la clase generaWav.GeneraWAV para realizar la creación efectiva del archivo WAV.
-        //generaWav = new GeneraWAV();
-        //generaWav.escribe(nombreArchAud, duracion, frecuencia_muestreo, duracion);
+        generaWav = new GeneraWAV();
+        generaWav.escribe(nombreArchAud, duracion, frecuencia_muestreo, senial_armonica);
     }
 
 }
