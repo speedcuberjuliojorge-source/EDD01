@@ -1,12 +1,19 @@
 package generaWav;
 
+/**
+ * Realizar la creación efectiva del archivo WAV y validar los valores
+ *
+ * @author julio_cubes
+ */
 public class GeneraWAV {
 
+    //Atributos
     boolean esWAV = true;
     String cadWAV = ".wav";
+    boolean nombreVacio;
 
     /**
-     * realizar la creación efectiva del archivo WAV y validar los valores
+     * Constructor
      */
     public void GeneraWAV() {
 
@@ -20,37 +27,45 @@ public class GeneraWAV {
     public void escribe(String nombre, int iTiempo,
             int iFrecuenciaMuestreo, int iArmonico) {
 
+        /////////////VALIDACIONES/////////////
+        //archivo sin extension .wav
         for (int i = 3; i >= 0 && esWAV; i--) {
             if (!(nombre.charAt(nombre.length() - 1 - i) == cadWAV.charAt(3 - i))) {
                 esWAV = false;
-                throw new IllegalArgumentException("archivo no wav");
+                throw new IllegalArgumentException("archivo sin extension .wav");
             }
         }
 
+        //archivo wav con solo extension
+        nombreVacio = false;
+        for (int i = 0; (i < nombre.length() - 4) && !nombreVacio; i++) {
+            if (nombre.charAt(i) != ' ') {
+                nombreVacio = true;
+            }
+        }
+        if (!nombreVacio || (nombre == ".wav")) {
+            throw new IllegalArgumentException("archivo wav con solo extension");
+        }
+
+        //Nombre del archivo nulo
         if (nombre == null) {
-            throw new java.lang.NullPointerException();
+            throw new java.lang.NullPointerException("Nombre del archivo nulo");
         }
 
+        //Nombre del archivo vacio
         if (nombre.isEmpty()) {
-            throw new java.lang.IllegalArgumentException();
+            throw new java.lang.IllegalArgumentException("Nombre del archivo vacio");
         }
 
+        //Tiempo, frecuencia de muestreo y/o armonico con valores invalidos
         if (iTiempo <= 0 || iFrecuenciaMuestreo <= 0 || iArmonico <= 0) {
-            throw new java.lang.IllegalArgumentException();
+            throw new java.lang.IllegalArgumentException("Tiempo, frecuencia de muestreo y/o armonico con valores invalidos");
         }
-        if (iArmonico > 20000) {
-            throw new java.lang.IllegalArgumentException();
-        }
-        /*
-        java.lang.NullPointerException: Se lanza si el parámetro nombre es nulo.
-        java.lang.IllegalArgumentException: Se lanza bajo las siguientes condiciones:
-            o Si los valores de iTiempo, iFrecuenciaMuestreo o armonico son menor que 0.
-            o Si el valor de armonico es superior a 20000 Hz, lo cual excede el límite de
-            escucha humana. Tambien si el armonico es inferior a 15430
-            o Si el parámetro name es una cadena vacía, solo contiene espacios en blanco, o no
-            tiene un nombre válido y la extensión .wav.
-         */
 
+        //Armonico con valor superior a 20000
+        if (iArmonico > 20000) {
+            throw new java.lang.IllegalArgumentException("Armonico con valor superior a 20000");
+        }
     }
 
 }

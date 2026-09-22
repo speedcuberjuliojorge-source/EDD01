@@ -32,10 +32,11 @@ public class EjecutaWAV {
         int duracion;
         GeneraWAV generaWav;
 
+        ////////////////VALIDACIONES////////////////
         if (args.length == 1) {
             archControl = args[0];
         } else {
-            throw new java.lang.IllegalArgumentException();
+            throw new java.lang.IllegalArgumentException("Se espera solo un parametro en args[]");
         }
 
         /*Verificacion de que se hayan proporcionado
@@ -88,14 +89,6 @@ public class EjecutaWAV {
         generaWav = new GeneraWAV();
 
         generaWav.escribe(nombreArchAud, duracion, frecuencia_muestreo, duracion);
-        /*
-        EXEPCIONES QUE PUEDE LANZAR EL PROGRAMA
-        java.lang.IllegalArgumentException:Si el número de argumentos de línea de comandos es distinto de uno.
-        NumberFormatException: Si un valor en el archivo de configuración no puede ser parseado a un entero válido
-        java.io.FileNotFoundException: Si el archivo de configuración especificado por el argumento de línea de comandos no existe.
-        java.io.IOException: Si ocurre cualquier problema durante la lectura del archivo de configuración (ej. archivo incompleto, problemas de permisos, fin de archivo inesperado).
-        Cualquier excepción (ej. java.lang.IllegalArgumentException, java.lang.NullPointerException) que sea lanzada por la clase generaWav.GeneraWAV debido a validaciones de los parámetros de generación del WAV.
-         */
     }
 
 }
