@@ -34,47 +34,49 @@ public class EjecutaWAV {
         String buffLectura;
 
         ////////////////VALIDACIONES////////////////
-        if (args.length == 1) {
-            archControl = args[0];
-        } else {
+        //Verifica que solo se alla pasado un args[0]
+        if (args.length != 1) {
             throw new java.lang.IllegalArgumentException();
         }
 
         /*Verificacion de que se hayan proporcionado
-        el número correcto de argumentos de línea de comandos.*/
+        el número correcto de argumentos de línea de comandos.
+        En caso de ser afirmativo, se almacena el nombre del arch de control*/
         if (args.length == 1) {
-
+            archControl = args[0];
             //Se comprueba si existe el archivo de control
             File fArchControl = new File(archControl);
             /*Si si existe el archivo de control, se lee el archivo de control
             y se guardan los valores*/
             if (fArchControl.exists()) {
                 lectorArch = new BufferedReader(new FileReader(archControl));
-                System.out.println(">> " + archControl);
                 nombreArchAud = lectorArch.readLine();
+                //Se verifica que se haya leido una linea de texto
                 if (nombreArchAud == null) {
                     throw new java.io.IOException();
                 }
-                System.out.println("Nombre arch. de audio: " + nombreArchAud);
+                //SE VERIFICA LA FRECUENCIA DE MUESTREO
                 try {
                     buffLectura = lectorArch.readLine();
+                    //Se verifica que se haya leido una linea de texto
                     if (buffLectura == null) {
                         throw new java.io.IOException();
                     }
                     frecuencia_muestreo = Integer.parseInt(buffLectura);
-                    System.out.println("Frecuencia de muestreo: " + frecuencia_muestreo);
                 } catch (java.lang.IllegalArgumentException e) {
                     throw new java.lang.IllegalArgumentException();
 
                 }
 
+                //SE VERIFICA LA SEÑAL ARMONICA
                 try {
                     buffLectura = lectorArch.readLine();
+                    //Se verifica que se haya leido una linea de texto
                     if (buffLectura == null) {
                         throw new java.io.IOException();
                     }
                     senial_armonica = Integer.parseInt(buffLectura);
-                    System.out.println("Señal armonica: " + senial_armonica);
+                    // se verifica el rango de la señal armonica
                     if (senial_armonica > 20000 || senial_armonica < 15430) {
                         throw new java.lang.IllegalArgumentException();
                     }
@@ -82,13 +84,14 @@ public class EjecutaWAV {
                     throw new java.lang.IllegalArgumentException();
                 }
 
+                //SE VERIFICA LA DURACION
                 try {
                     buffLectura = lectorArch.readLine();
+                    // se verifica el rango de la señal armonica
                     if (buffLectura == null) {
                         throw new java.io.IOException();
                     }
                     duracion = Integer.parseInt(buffLectura);
-                    System.out.println("Duracion de audio: " + duracion);
                 } catch (java.lang.IllegalArgumentException e) {
                     throw new java.lang.IllegalArgumentException();
                 }
