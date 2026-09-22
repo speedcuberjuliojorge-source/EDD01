@@ -31,12 +31,13 @@ public class EjecutaWAV {
         int senial_armonica;
         int duracion;
         GeneraWAV generaWav;
+        String buffLectura;
 
         ////////////////VALIDACIONES////////////////
         if (args.length == 1) {
             archControl = args[0];
         } else {
-            throw new java.lang.IllegalArgumentException("Se espera solo un parametro en args[]");
+            throw new java.lang.IllegalArgumentException();
         }
 
         /*Verificacion de que se hayan proporcionado
@@ -51,9 +52,16 @@ public class EjecutaWAV {
                 lectorArch = new BufferedReader(new FileReader(archControl));
                 System.out.println(">> " + archControl);
                 nombreArchAud = lectorArch.readLine();
+                if (nombreArchAud == null) {
+                    throw new java.io.IOException();
+                }
                 System.out.println("Nombre arch. de audio: " + nombreArchAud);
                 try {
-                    frecuencia_muestreo = Integer.parseInt(lectorArch.readLine());
+                    buffLectura = lectorArch.readLine();
+                    if (buffLectura == null) {
+                        throw new java.io.IOException();
+                    }
+                    frecuencia_muestreo = Integer.parseInt(buffLectura);
                     System.out.println("Frecuencia de muestreo: " + frecuencia_muestreo);
                 } catch (java.lang.IllegalArgumentException e) {
                     throw new java.lang.IllegalArgumentException();
@@ -61,14 +69,25 @@ public class EjecutaWAV {
                 }
 
                 try {
-                    senial_armonica = Integer.parseInt(lectorArch.readLine());
+                    buffLectura = lectorArch.readLine();
+                    if (buffLectura == null) {
+                        throw new java.io.IOException();
+                    }
+                    senial_armonica = Integer.parseInt(buffLectura);
                     System.out.println("Señal armonica: " + senial_armonica);
+                    if (senial_armonica > 20000 || senial_armonica < 15430) {
+                        throw new java.lang.IllegalArgumentException();
+                    }
                 } catch (java.lang.IllegalArgumentException e) {
                     throw new java.lang.IllegalArgumentException();
                 }
 
                 try {
-                    duracion = Integer.parseInt(lectorArch.readLine());
+                    buffLectura = lectorArch.readLine();
+                    if (buffLectura == null) {
+                        throw new java.io.IOException();
+                    }
+                    duracion = Integer.parseInt(buffLectura);
                     System.out.println("Duracion de audio: " + duracion);
                 } catch (java.lang.IllegalArgumentException e) {
                     throw new java.lang.IllegalArgumentException();
@@ -86,9 +105,8 @@ public class EjecutaWAV {
         }
 
         //invocar a la clase generaWav.GeneraWAV para realizar la creación efectiva del archivo WAV.
-        generaWav = new GeneraWAV();
-
-        generaWav.escribe(nombreArchAud, duracion, frecuencia_muestreo, duracion);
+        //generaWav = new GeneraWAV();
+        //generaWav.escribe(nombreArchAud, duracion, frecuencia_muestreo, duracion);
     }
 
 }
