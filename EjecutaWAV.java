@@ -11,7 +11,7 @@ import java.io.FileReader;
  *
  * @author julio_cubes
  */
-public class EjecutaWAV {
+public final class EjecutaWAV {
 
     /**
      * Metodo main del programa
@@ -27,8 +27,8 @@ public class EjecutaWAV {
         String archControl = "";
         BufferedReader lectorArch;
         String nombreArchAud;
-        int frecuencia_muestreo;
-        int senial_armonica;
+        int frecuenciaMuestreo;
+        int senialArmonica;
         int duracion;
         GeneraWAV generaWav;
         String buffLectura;
@@ -62,7 +62,7 @@ public class EjecutaWAV {
                     if (buffLectura == null) {
                         throw new java.io.IOException();
                     }
-                    frecuencia_muestreo = Integer.parseInt(buffLectura);
+                    frecuenciaMuestreo = Integer.parseInt(buffLectura);
                 } catch (java.lang.IllegalArgumentException e) {
                     throw new java.lang.IllegalArgumentException();
 
@@ -75,9 +75,9 @@ public class EjecutaWAV {
                     if (buffLectura == null) {
                         throw new java.io.IOException();
                     }
-                    senial_armonica = Integer.parseInt(buffLectura);
+                    senialArmonica = Integer.parseInt(buffLectura);
                     // se verifica el rango de la señal armonica
-                    if (senial_armonica > 20000 || senial_armonica < 0) {
+                    if (senialArmonica > 20000 || senialArmonica < 0) {
                         throw new java.lang.IllegalArgumentException();
                     }
                 } catch (java.lang.IllegalArgumentException e) {
@@ -98,18 +98,22 @@ public class EjecutaWAV {
                 lectorArch.close();
                 //Si no existe el archivo de control, se tira una exepcion
             } else {
-                throw new java.io.FileNotFoundException(/*"No se encontro el archivo de control"*/);
+                throw new java.io.FileNotFoundException(/*"No se encontro el
+                                                        archivo de control"*/);
             }
 
             /*En caso de recibir más parametros de los esperados,
             se tira una exepcion*/
         } else {
-            throw new java.lang.IllegalArgumentException(/*"Numero de paramentros args[] incorrecto"*/);
+            throw new java.lang.IllegalArgumentException(/*"Numero de
+                                    paramentros args[] incorrecto"*/);
         }
 
-        //invocar a la clase generaWav.GeneraWAV para realizar la creación efectiva del archivo WAV.
+        //invocar a la clase generaWav.GeneraWAV para realizar la creación
+        //efectiva del archivo WAV.
         generaWav = new GeneraWAV();
-        generaWav.escribe(nombreArchAud, duracion, frecuencia_muestreo, senial_armonica);
+        generaWav.escribe(nombreArchAud, duracion, frecuenciaMuestreo,
+                senialArmonica);
     }
 
 }

@@ -8,21 +8,21 @@ import java.io.IOException;
  *
  * @author julio_cubes
  */
-public class GeneraWAV {
+public final class GeneraWAV {
 
     ///////ATRIBUTOS///////
-    private byte riff[];
-    private int tamano = 2084;//Tamaño del archivo – 8
-    private byte wave[];
+    private byte[] riff;
+    private int tamanio;//Tamaño del archivo 
+    private byte[] wave;
     private int formato;
     private short pcm;
     private short canales;
     private int frecuencia;
-    private int f_muestreo;
-    private short bytes_m;
-    private short bits_m;
-    private byte data[];
-    private int bytes_archivo = 2084;//Número de bytes que ocupan las muestras
+    private int fMuestreo;
+    private short bytesM;
+    private short bitsM;
+    private byte[] data;
+    private int bytesArchivo;//Número de bytes que ocupan las muestras
 
     //valores estandar del encabezado
     public GeneraWAV() {
@@ -45,6 +45,17 @@ public class GeneraWAV {
     public void escribe(String nombre, int iTiempo,
             int iFrecuenciaMuestreo, int iArmonico) {
 
+        this.setTamano(((iFrecuenciaMuestreo * 16) + 352 / 8) - 8);
+        this.setBytes_archivo(iFrecuenciaMuestreo * iTiempo * bytesM);
+
+        /*
+            ESCRIBIR NUMEROS SHORT EN COMPLEMENTO A 2
+        short d = 15;
+        int iD = (~d) + 1;
+        d = (short) iD;
+
+        System.out.println("");
+         */
         //VARIABLES PARA LAS VALIDACIONES
         boolean esWAV = true;
         String cadWAV = ".wav";
@@ -53,9 +64,11 @@ public class GeneraWAV {
         /////////////VALIDACIONES/////////////
         //archivo sin extension .wav
         for (int i = 3; i >= 0 && esWAV && !nombre.isEmpty(); i--) {
-            if (!(nombre.charAt(nombre.length() - 1 - i) == cadWAV.charAt(3 - i))) {
+            if (!(nombre.charAt(nombre.length() - 1 - i)
+                    == cadWAV.charAt(3 - i))) {
                 esWAV = false;
-                throw new IllegalArgumentException("archivo sin extension .wav");
+                throw new IllegalArgumentException(""
+                        + "archivo sin extension .wav");
             }
         }
 
@@ -67,7 +80,8 @@ public class GeneraWAV {
             }
         }
         if (!nombreVacio || (nombre == ".wav")) {
-            throw new IllegalArgumentException("archivo wav con solo extension");
+            throw new IllegalArgumentException("archivo wav con solo "
+                    + "extension");
         }
 
         //Nombre del archivo nulo
@@ -77,30 +91,33 @@ public class GeneraWAV {
 
         //Nombre del archivo vacio
         if (nombre.isEmpty()) {
-            throw new java.lang.IllegalArgumentException("Nombre del archivo vacio");
+            throw new java.lang.IllegalArgumentException("Nombre del archivo "
+                    + "vacio");
         }
 
         //Tiempo, frecuencia de muestreo y/o armonico con valores invalidos
         if (iTiempo <= 0 || iFrecuenciaMuestreo <= 0 || iArmonico <= 0) {
-            throw new java.lang.IllegalArgumentException("Tiempo, frecuencia de muestreo y/o armonico con valores invalidos");
+            throw new java.lang.IllegalArgumentException("Tiempo, frecuencia de"
+                    + " muestreo y/o armonico con valores invalidos");
         }
 
         //Armonico con valor superior a 20000
         if (iArmonico > 20000) {
-            throw new java.lang.IllegalArgumentException("Armonico con valor superior a 20000");
+            throw new java.lang.IllegalArgumentException("Armonico con valor "
+                    + "superior a 20000");
         }
 
         //Pasando la frecuencia del parametro a su varible local
         this.setFrecuencia(iFrecuenciaMuestreo);
 
-        ///////////////////////// ESCRITURA DEL ARCHIVO.WAV /////////////////////////
+        ///////////////////////// ESCRITURA DEL ARCHIVO.WAV //////////////////
         try (FileOutputStream writeWAV = new FileOutputStream(nombre)) {
 
             writeWAV.write(riff);
-            writeWAV.write(tamano);
-            writeWAV.write(tamano >> 8);
-            writeWAV.write(tamano >> 16);
-            writeWAV.write(tamano >> 24);
+            writeWAV.write(tamanio);
+            writeWAV.write(tamanio >> 8);
+            writeWAV.write(tamanio >> 16);
+            writeWAV.write(tamanio >> 24);
             writeWAV.write(wave);
             writeWAV.write(formato);
             writeWAV.write(formato >> 8);
@@ -114,19 +131,32 @@ public class GeneraWAV {
             writeWAV.write(frecuencia >> 8);
             writeWAV.write(frecuencia >> 16);
             writeWAV.write(frecuencia >> 24);
-            writeWAV.write(f_muestreo);
-            writeWAV.write(f_muestreo >> 8);
-            writeWAV.write(f_muestreo >> 16);
-            writeWAV.write(f_muestreo >> 24);
-            writeWAV.write(bytes_m);
-            writeWAV.write(bytes_m >> 8);
-            writeWAV.write(bits_m);
-            writeWAV.write(bits_m >> 8);
+            writeWAV.write(fMuestreo);
+            writeWAV.write(fMuestreo >> 8);
+            writeWAV.write(fMuestreo >> 16);
+            writeWAV.write(fMuestreo >> 24);
+            writeWAV.write(bytesM);
+            writeWAV.write(bytesM >> 8);
+            writeWAV.write(bitsM);
+            writeWAV.write(bitsM >> 8);
             writeWAV.write(data);
-            writeWAV.write(bytes_archivo);
-            writeWAV.write(bytes_archivo >> 8);
-            writeWAV.write(bytes_archivo >> 16);
-            writeWAV.write(bytes_archivo >> 24);
+            writeWAV.write(bytesArchivo);
+            writeWAV.write(bytesArchivo >> 8);
+            writeWAV.write(bytesArchivo >> 16);
+            writeWAV.write(bytesArchivo >> 24);
+
+            //Escribir muestras
+            int dMuestra;
+            short sMuestra;
+            for (int i = 0; i < iFrecuenciaMuestreo * iTiempo; i++) {
+                dMuestra = (int) (32767 * Math.sin(2 * Math.PI * iArmonico
+                        * ((double) i / iFrecuenciaMuestreo)));
+                dMuestra = (~dMuestra) + 1;
+                sMuestra = (short) dMuestra;
+                writeWAV.write(sMuestra);
+                writeWAV.write(sMuestra >> 8);
+
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -138,96 +168,95 @@ public class GeneraWAV {
         return riff;
     }
 
-    public void setRiff(byte[] riff) {
-        this.riff = riff;
+    public void setRiff(byte[] nRiff) {
+        this.riff = nRiff;
     }
 
     public int getTamano() {
-        return tamano;
+        return tamanio;
     }
 
-    public void setTamano(int tamano) {
-        this.tamano = tamano;
+    public void setTamano(int nTamano) {
+        this.tamanio = nTamano;
     }
 
     public byte[] getWave() {
         return wave;
     }
 
-    public void setWave(byte[] wave) {
-        this.wave = wave;
+    public void setWave(byte[] nWave) {
+        this.wave = nWave;
     }
 
     public int getFormato() {
         return formato;
     }
 
-    public void setFormato(int formato) {
-        this.formato = formato;
+    public void setFormato(int nFormato) {
+        this.formato = nFormato;
     }
 
     public short getPcm() {
         return pcm;
     }
 
-    public void setPcm(short pcm) {
-        this.pcm = pcm;
+    public void setPcm(short nPcm) {
+        this.pcm = nPcm;
     }
 
     public short getCanales() {
         return canales;
     }
 
-    public void setCanales(short canales) {
-        this.canales = canales;
+    public void setCanales(short nCanales) {
+        this.canales = nCanales;
     }
 
     public int getFrecuencia() {
         return frecuencia;
     }
 
-    public void setFrecuencia(int frecuencia) {
-        this.frecuencia = frecuencia;
+    public void setFrecuencia(int nFrecuencia) {
+        this.frecuencia = nFrecuencia;
     }
 
     public int getF_muestreo() {
-        return f_muestreo;
+        return fMuestreo;
     }
 
-    public void setF_muestreo(int f_muestreo) {
-        this.f_muestreo = f_muestreo;
+    public void setF_muestreo(int nFMuestreo) {
+        this.fMuestreo = nFMuestreo;
     }
 
     public short getBytes_m() {
-        return bytes_m;
+        return bytesM;
     }
 
-    public void setBytes_m(short bytes_m) {
-        this.bytes_m = bytes_m;
+    public void setBytes_m(short nBytesM) {
+        this.bytesM = nBytesM;
     }
 
     public short getBits_m() {
-        return bits_m;
+        return bitsM;
     }
 
-    public void setBits_m(short bits_m) {
-        this.bits_m = bits_m;
+    public void setBits_m(short nBitsM) {
+        this.bitsM = nBitsM;
     }
 
     public byte[] getData() {
         return data;
     }
 
-    public void setData(byte[] data) {
-        this.data = data;
+    public void setData(byte[] nData) {
+        this.data = nData;
     }
 
     public int getBytes_archivo() {
-        return bytes_archivo;
+        return bytesArchivo;
     }
 
-    public void setBytes_archivo(int bytes_archivo) {
-        this.bytes_archivo = bytes_archivo;
+    public void setBytes_archivo(int nBytesArchivo) {
+        this.bytesArchivo = nBytesArchivo;
     }
-
 }
